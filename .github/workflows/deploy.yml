@@ -1,0 +1,50 @@
+name: Deploy Multi-App Monorepo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy All Apps
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Global Wrangler
+        run: npm install -g wrangler
+
+      - name: Deploy Apps
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Loop through all directories
+          for dir in */ ; do
+            # Check if directory contains wrangler.toml
+            if [ -f "$dir/wrangler.toml" ]; then
+              echo "🚀 Deploying app in: $dir"
+              
+              # Go inside the folder
+              cd "$dir"
+              
+              # Install dependencies locally
+              npm install
+              
+              # Deploy using Global Wrangler
+              wrangler deploy --minify
+              
+              # Go back to root
+              cd ..
+              
+              echo "✅ Successfully deployed: $dir"
+              echo "-----------------------------------"
+            fi
+          done
+          
