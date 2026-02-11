@@ -7,3 +7,20 @@ compatibility_date = "2024-02-08"
 binding = "DB"
 database_name = "vlog"
 database_id = "671461c9-e734-4269-a895-b3ce88f7778c"
+# ... (uporer ongsho jemon chilo temon thakbe)
+
+# --- LOG SETTINGS (Add this at the bottom) ---
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+persist = true
+head_sampling_rate = 1
