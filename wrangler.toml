@@ -1,3 +1,9 @@
-name = "secure-telegram-worker"
+name = "vlog-app"
 main = "src/index.ts"
 compatibility_date = "2024-02-08"
+
+# D1 Database Binding (Database ID is safe to keep here)
+[[d1_databases]]
+binding = "DB"
+database_name = "vlog"
+database_id = "671461c9-e734-4269-a895-b3ce88f7778c"
