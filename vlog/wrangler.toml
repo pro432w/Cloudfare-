@@ -1,0 +1,26 @@
+name = "vlog-app"
+main = "src/index.ts"
+compatibility_date = "2024-02-08"
+
+# D1 Database Binding (Database ID is safe to keep here)
+[[d1_databases]]
+binding = "DB"
+database_name = "vlog"
+database_id = "PASTE_YOUR_DATABASE_ID_HERE"
+# ... (uporer ongsho jemon chilo temon thakbe)
+
+# --- LOG SETTINGS (Add this at the bottom) ---
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+persist = true
+head_sampling_rate = 1
