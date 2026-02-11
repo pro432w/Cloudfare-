@@ -1,0 +1,52 @@
+name: Deploy Any App (Monorepo)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-all:
+    runs-on: ubuntu-latest
+    name: Auto Deploy All Apps
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Wrangler
+        run: npm install -g wrangler
+
+      - name: Deploy Detected Apps
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # সব ফোল্ডার লুপ করে চেক করবে
+          for dir in */ ; do
+            # যদি ফোল্ডারের ভেতর wrangler.toml পায়
+            if [ -f "$dir/wrangler.toml" ]; then
+              echo "🚀 Found App in folder: $dir"
+              
+              # ফোল্ডারের ভেতরে ঢুকবে
+              cd "$dir"
+              
+              # ডিপেন্ডেন্সি ইনস্টল করবে
+              if [ -f "package.json" ]; then
+                npm install
+              fi
+
+              # ডিপ্লয় করবে
+              echo "🔥 Deploying..."
+              wrangler deploy --minify
+              
+              # আবার মেইন ডিরেক্টরিতে ফিরে আসবে পরের অ্যাপ চেক করার জন্য
+              cd ..
+              echo "✅ Done: $dir"
+              echo "-----------------------------------"
+            fi
+          done
